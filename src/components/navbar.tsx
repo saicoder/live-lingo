@@ -1,3 +1,5 @@
+/* eslint-disable @next/next/no-img-element */
+
 import {
   Box,
   Flex,
@@ -54,10 +56,13 @@ export const Navbar = () => {
             <Menu>
               <MenuButton>
                 <Flex as={Flex} alignItems="center" cursor="pointer">
-                  <Avatar
-                    w={10}
-                    h={10}
-                    src={session.user?.image || undefined}
+                  <img
+                    alt=""
+                    src={session.user?.image || ''}
+                    width={40}
+                    height={40}
+                    referrerPolicy="no-referrer"
+                    style={{ borderRadius: '100%' }}
                   />
                   <Text ml={3} fontSize="sm" fontWeight="semibold">
                     {session.user?.name}
