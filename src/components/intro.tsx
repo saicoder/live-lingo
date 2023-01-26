@@ -26,7 +26,7 @@ export const Intro = () => {
           <Text color={'gray.500'}>
             Live Lingo is an online video chat platform for learning new
             languages. <br />
-            It's completely free and easy to use. Sign in with your Google
+            It&apos;s completely free and easy to use. Sign in with your Google
             account and start learning today.
           </Text>
           <Stack
