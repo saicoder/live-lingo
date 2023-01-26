@@ -10,6 +10,7 @@ AGORA_CERT=[AgoraCertificate]
 GOOGLE_CLIENT_ID=[GoogleClientId]
 GOOGLE_CLIENT_SECRET=[GoogleClientSecret]
 NEXTAUTH_SECRET=[random uuid string]
+REDIS_URL=[redis url]
 ```
 
 Run the development server:

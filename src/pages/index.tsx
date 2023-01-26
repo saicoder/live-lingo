@@ -16,38 +16,46 @@ export default function Home() {
   const [loading, setLoading] = useState(false)
   const toast = useToast()
 
-  const createMatchingRequest = trpc.createMatchingRequest.useMutation()
-  const isSessionReady = trpc.isSessionReady.useMutation()
+  const createMatchingRequest = trpc.session.createMatchingRequest.useMutation()
+  const isSessionReady = trpc.session.isSessionReady.useMutation()
 
   const onSubmit = async (language: Language, level: LanguageLevel) => {
     setLoading(true)
 
-    const { requestId } = await createMatchingRequest.mutateAsync({
-      language,
-      level,
-    })
+    try {
+      const { requestId } = await createMatchingRequest.mutateAsync({
+        language,
+        level,
+      })
 
-    let iteration = 5
+      let iteration = 15
 
-    while (--iteration >= 0) {
-      const result = await isSessionReady.mutateAsync(requestId)
+      while (--iteration >= 0) {
+        const result = await isSessionReady.mutateAsync(requestId)
 
-      if (result === true) {
-        console.log('Ok found')
-        router.push(`/session/${requestId}`)
+        if (result === true) {
+          console.log('Ok found')
+          router.push(`/session/${requestId}`)
 
-        return
-      } else {
-        await new Promise((res) => setTimeout(res, 2000))
+          return
+        } else {
+          await new Promise((res) => setTimeout(res, 2000))
+        }
       }
-    }
 
-    toast({
-      title: 'Could not find anyone in 10 seconds',
-      description: 'Please try again',
-      status: 'warning',
-    })
-    setLoading(false)
+      toast({
+        title: 'Could not find anyone in 30 seconds',
+        description: 'Please try again',
+        status: 'warning',
+      })
+    } catch (ex: any) {
+      toast({
+        title: ex.message,
+        status: 'error',
+      })
+    } finally {
+      setLoading(false)
+    }
   }
 
   return (

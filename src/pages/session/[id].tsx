@@ -7,7 +7,6 @@ import {
   Box,
   Button,
   Flex,
-  IconButton,
   Input,
   InputGroup,
   InputRightElement,
@@ -41,7 +40,9 @@ export interface SessionState {
 
 export default function Home() {
   const router = useRouter()
-  const getSessionDetails = trpc.getSessionDetails.useMutation()
+  const getSessionDetails = trpc.session.getSessionDetails.useMutation()
+  const report = trpc.blocklist.report.useMutation()
+
   const [sessionState, setSessionState] = useState<SessionState>()
   const { data: userSession } = useSession()
 
@@ -64,32 +65,49 @@ export default function Home() {
   }
 
   const init = async (sessionId: string, myId: string) => {
-    const session = await getSessionDetails.mutateAsync(sessionId)
-    const appId = process.env.NEXT_PUBLIC_AGORA_APP_ID || ''
+    try {
+      const session = await getSessionDetails.mutateAsync(sessionId)
+      const appId = process.env.NEXT_PUBLIC_AGORA_APP_ID || ''
 
-    // init chat
-    const { default: AgoraRTM } = await import('agora-rtm-sdk')
-    const chat = AgoraRTM.createInstance(appId)
-    const channel = chat.createChannel(`chat:${sessionId}`)
+      // init chat
+      const { default: AgoraRTM } = await import('agora-rtm-sdk')
+      const chat = AgoraRTM.createInstance(appId)
+      const channel = chat.createChannel(`chat:${sessionId}`)
 
-    channel.on('ChannelMessage', ({ text }) => {
-      setMessages((items) => [...items, { mine: false, text: text! }])
-    })
+      channel.on('ChannelMessage', ({ text }) => {
+        setMessages((items) => [...items, { mine: false, text: text! }])
+      })
 
-    await chat.login({ uid: session.chatUid, token: session.rtmChatToken })
-    await channel.join()
-    channelRef.current = channel
+      await chat.login({ uid: session.chatUid, token: session.rtmChatToken })
+      await channel.join()
+      channelRef.current = channel
 
-    setSessionState({
-      appId,
-      channel: sessionId,
-      ...session,
-    })
+      setSessionState({
+        appId,
+        channel: sessionId,
+        ...session,
+      })
 
-    return async () => {
-      await channel.leave()
-      await chat.logout()
+      return async () => {
+        await channel.leave()
+        await chat.logout()
+      }
+    } catch (ex) {
+      router.replace('/')
+      throw ex
     }
+  }
+
+  const onReport = async () => {
+    if (
+      !confirm(
+        'Are you sure you want to report this user? This chat will end immediately and he might be blocked?'
+      )
+    )
+      return
+
+    await report.mutateAsync(router.query.id as string)
+    router.replace('/')
   }
 
   useEffect(() => {
@@ -159,11 +177,13 @@ export default function Home() {
                   fontSize="2xs"
                   color="gray.500"
                 >
-                  Rating: 4.2
+                  Rating: 3.0
                 </Text>
               </Flex>
               <Flex flex={1} />
-              <Button colorScheme="red">Report</Button>
+              <Button onClick={onReport} colorScheme="red">
+                Report
+              </Button>
             </Flex>
 
             <Flex flexDirection="column" flex={1} position="relative">
