@@ -36,7 +36,7 @@ export default function Home() {
         console.log('Ok found')
         router.push(`/session/${requestId}`)
 
-        break
+        return
       } else {
         await new Promise((res) => setTimeout(res, 2000))
       }
