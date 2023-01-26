@@ -10,6 +10,17 @@ import { Language, LanguageLevel } from '@/shared/language'
 import { trpc } from '@/shared/trpc'
 import { useRouter } from 'next/router'
 
+import { unstable_getServerSession } from 'next-auth/next'
+import { authOptions } from './api/auth/[...nextauth]'
+
+export async function getServerSideProps({ req, res }: any) {
+  return {
+    props: {
+      session: await unstable_getServerSession(req, res, authOptions),
+    },
+  }
+}
+
 export default function Home() {
   const router = useRouter()
   const { data: session } = useSession()
