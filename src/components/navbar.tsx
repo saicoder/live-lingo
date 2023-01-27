@@ -13,6 +13,7 @@ import {
   MenuButton,
 } from '@chakra-ui/react'
 import { useSession, signOut, signIn } from 'next-auth/react'
+import Link from 'next/link'
 
 import { Logo } from './logo'
 
@@ -33,7 +34,9 @@ export const Navbar = () => {
         justifyContent="center"
       >
         <Flex flex={1} maxW={'5xl'} alignItems="center">
-          <Logo height={40} />
+          <Link href="/">
+            <Logo height={35} />
+          </Link>
 
           <Box flex={1} />
 

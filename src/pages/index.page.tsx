@@ -11,7 +11,7 @@ import { trpc } from '@/shared/trpc'
 import { useRouter } from 'next/router'
 
 import { unstable_getServerSession } from 'next-auth/next'
-import { authOptions } from './api/auth/[...nextauth]'
+import { authOptions } from './api/auth/[...nextauth].page'
 
 export async function getServerSideProps({ req, res }: any) {
   return {

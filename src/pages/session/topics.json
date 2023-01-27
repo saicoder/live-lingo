@@ -1,0 +1,102 @@
+{
+    "topics": [
+        {
+            "name": "Introductions",
+            "questions": [
+                "What is your name?",
+                "How old are you?",
+                "What do you do for a living?",
+                "Where are you from?"
+            ]
+        },
+        {
+            "name": "Hobbies and interests",
+            "questions": [
+                "What are your hobbies?",
+                "What do you like to do in your free time?",
+                "Do you have any favorite sports or musical genres?"
+            ]
+        },
+        {
+            "name": "Daily routines",
+            "questions": [
+                "Can you tell me about your daily routine?",
+                "What time do you wake up?",
+                "What do you do for work?",
+                "What do you like to eat for breakfast/lunch/dinner?"
+            ]
+        },
+        {
+            "name": "Weather",
+            "questions": [
+                "What is the weather like today?",
+                "How hot/cold is it?",
+                "Is it sunny or cloudy?",
+                "What is the forecast for tomorrow?"
+            ]
+        },
+        {
+            "name": "Family",
+            "questions": [
+                "Do you have any siblings?",
+                "Are your parents still alive?",
+                "Do you have any children?",
+                "What are their names?"
+            ]
+        },
+        {
+            "name": "Food and drink",
+            "questions": [
+                "What is your favorite food?",
+                "What kind of cuisine do you like?",
+                "Do you have any dietary restrictions?",
+                "What is your favorite drink?"
+            ]
+        },
+        {
+            "name": "Shopping",
+            "questions": [
+                "Do you like shopping?",
+                "What kind of clothes do you like to wear?",
+                "Do you shop online or in person?",
+                "What is your favorite store?"
+            ]
+        },
+        {
+            "name": "Travel",
+            "questions": [
+                "Have you ever traveled abroad?",
+                "Where have you been?",
+                "Do you have any trips planned?",
+                "What is your dream vacation destination?"
+            ]
+        },
+        {
+            "name": "Describing people",
+            "questions": [
+                "Can you describe your best friend?",
+                "What does your sister look like?",
+                "What is your boss's personality like?",
+                "Can you tell me about your favorite actor/actress?"
+            ]
+        },
+        {
+            "name": "Describing places",
+            "questions": [
+                "What is your house like?",
+                "Can you describe your hometown?",
+                "What is your favorite city?",
+                "What is your country famous for?"
+            ]
+        },
+        {
+            "name": "School and education",
+            "questions": [
+                "Are you still in school?",
+                "What is your major?",
+                "What is your favorite subject?",
+                "How was your last exam?"
+            ]
+        }
+    ]
+}

@@ -1,4 +1,4 @@
-import { authOptions } from '@/pages/api/auth/[...nextauth]'
+import { authOptions } from '@/pages/api/auth/[...nextauth].page'
 import { User } from '@/shared/user'
 import { inferAsyncReturnType, TRPCError } from '@trpc/server'
 import * as trpcNext from '@trpc/server/adapters/next'

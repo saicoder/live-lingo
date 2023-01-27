@@ -1,3 +1,4 @@
+/* eslint-disable @next/next/no-img-element */
 import Head from 'next/head'
 import { useSession } from 'next-auth/react'
 
@@ -7,18 +8,22 @@ import {
   Box,
   Button,
   Flex,
+  IconButton,
   Input,
   InputGroup,
   InputRightElement,
+  SlideFade,
   Text,
 } from '@chakra-ui/react'
-import type { RtmChannel } from 'agora-rtm-sdk'
+import type { RtmChannel, RtmClient } from 'agora-rtm-sdk'
 
 import dynamic from 'next/dynamic'
 import { trpc } from '@/shared/trpc'
 import { useRouter } from 'next/router'
 import { User } from '@/shared/user'
-import { ChevronRightIcon } from '@chakra-ui/icons'
+import { ChevronRightIcon, RepeatIcon } from '@chakra-ui/icons'
+import { channel } from 'diagnostics_channel'
+import { randomItem } from '@/shared/utils'
 
 const Agora = dynamic(() => import('agora-react-uikit'), {
   ssr: false,
@@ -38,6 +43,11 @@ export interface SessionState {
   uid: string
 }
 
+export interface Topic {
+  name: string
+  questions: string[]
+}
+
 export default function Home() {
   const router = useRouter()
   const getSessionDetails = trpc.session.getSessionDetails.useMutation()
@@ -48,6 +58,10 @@ export default function Home() {
 
   const [msg, setMsg] = useState('')
   const [messages, setMessages] = useState<Message[]>([])
+  const [topic, setTopic] = useState<Topic>()
+  const [randomQuestion, setRandomQuestion] = useState<string>()
+
+  const clientRef = useRef<RtmClient>()
   const channelRef = useRef<RtmChannel>()
   const messageElementRef = useRef<any>()
 
@@ -57,11 +71,38 @@ export default function Home() {
         messageElementRef.current.scrollHeight
   })
 
+  useEffect(() => {
+    if (!topic) return
+    setRandomQuestion(randomItem(topic.questions))
+
+    const inter = setInterval(
+      () => setRandomQuestion(randomItem(topic.questions)),
+      10000
+    )
+
+    return () => clearInterval(inter)
+  }, [topic])
+
   const onSendMessage = async () => {
     await channelRef.current?.sendMessage({ text: msg })
 
     setMessages((m) => [...m, { mine: true, text: msg }])
     setMsg('')
+  }
+
+  const getRandomTopic = async () => {
+    if (!clientRef.current || !channelRef.current) return
+
+    const { topics } = await import('./topics.json')
+
+    const randomTopic = randomItem(topics)
+
+    const metadata = clientRef.current?.createMetadataItem()
+    metadata.setKey('topic')
+    metadata.setValue(JSON.stringify(randomTopic))
+
+    channelRef.current?.setChannelMetadata([metadata])
+    setTopic(randomTopic)
   }
 
   const init = async (sessionId: string, myId: string) => {
@@ -74,12 +115,24 @@ export default function Home() {
       const chat = AgoraRTM.createInstance(appId)
       const channel = chat.createChannel(`chat:${sessionId}`)
 
+      channel.on('MetaDataUpdated', ({ items }) => {
+        const topicStr = items.at(0)?.getValue()
+        if (topicStr) setTopic(JSON.parse(topicStr))
+      })
+
       channel.on('ChannelMessage', ({ text }) => {
         setMessages((items) => [...items, { mine: false, text: text! }])
       })
 
+      channel.on('MemberJoined', async () => {
+        const members = await channel.getMembers()
+        if (members.length) getRandomTopic()
+      })
+
       await chat.login({ uid: session.chatUid, token: session.rtmChatToken })
       await channel.join()
+
+      clientRef.current = chat
       channelRef.current = channel
 
       setSessionState({
@@ -93,7 +146,7 @@ export default function Home() {
         await chat.logout()
       }
     } catch (ex) {
-      router.replace('/')
+      //router.replace('/')
       throw ex
     }
   }
@@ -162,7 +215,7 @@ export default function Home() {
             {/* USER */}
             <Flex p={4} alignItems="center" borderBottomWidth={1}>
               <img
-                alt="user image"
+                alt=""
                 src={sessionState?.partner.image}
                 width="40px"
                 height="40px"
@@ -181,10 +234,47 @@ export default function Home() {
                 </Text>
               </Flex>
               <Flex flex={1} />
-              <Button onClick={onReport} colorScheme="red">
+              <Button size="xs" onClick={onReport} colorScheme="red">
                 Report
               </Button>
             </Flex>
+
+            {/* ========================== TOPIC ====================== */}
+            {topic && (
+              <Flex p={4} borderBottomWidth={1} flexDirection="column">
+                <Flex>
+                  <Text
+                    fontWeight="bold"
+                    textTransform="uppercase"
+                    fontSize="11"
+                    color="gray.500"
+                  >
+                    Suggested Topic: {topic?.name}
+                  </Text>
+
+                  <Box flex={1} />
+
+                  <IconButton
+                    mt={-2}
+                    size={'sm'}
+                    aria-label="Next Topic"
+                    icon={<RepeatIcon />}
+                    onClick={getRandomTopic}
+                  />
+                </Flex>
+
+                <SlideFade
+                  in={true}
+                  offsetX="-20px"
+                  offsetY={0}
+                  key={randomQuestion}
+                >
+                  <Text fontSize="11" pt={3} fontWeight="bold" color="gray.500">
+                    {randomQuestion}
+                  </Text>
+                </SlideFade>
+              </Flex>
+            )}
 
             <Flex flexDirection="column" flex={1} position="relative">
               <Box
