@@ -1,5 +1,14 @@
 import Head from 'next/head'
-import { Box, Heading, Container, Text, Button, Stack } from '@chakra-ui/react'
+import {
+  Box,
+  Heading,
+  Container,
+  Text,
+  Button,
+  Stack,
+  Link,
+  Flex,
+} from '@chakra-ui/react'
 
 import { signIn } from 'next-auth/react'
 
@@ -53,6 +62,24 @@ export const Intro = () => {
               Learn more
             </Button>
           </Stack>
+
+          <Text color={'gray.500'}>
+            With Live Lingo, you&apos;ll have access to a community of language
+            learners from all over the world. Practice speaking, listening,
+            reading, and writing with native speakers and improve your language
+            skills faster. Sign up now and start speaking your target language
+            like a pro!
+          </Text>
+
+          <Flex pt={180}>
+            <Link href="mailto:saicoder.net@gmail.com">
+              <Text>Contact Us</Text>
+            </Link>
+            <Flex flex={1} />
+            <Link href="/privacy.html">
+              <Text>Privacy Policy</Text>
+            </Link>
+          </Flex>
         </Stack>
       </Container>
     </>
