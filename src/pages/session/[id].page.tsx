@@ -180,7 +180,7 @@ export default function Home() {
       <Flex h="100vh" flexDirection="column">
         <Navbar />
 
-        <Flex flex={1}>
+        <Flex flex={1} flexDirection={{ base: 'column', md: 'row' }}>
           <Flex flex={1} position="relative" bg="gray.400">
             {sessionState && (
               <Agora

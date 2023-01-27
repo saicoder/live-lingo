@@ -12,14 +12,21 @@ export const SessionForm = ({ onSubmit }: SessionFormProps) => {
   const [level, setLevel] = useState(LanguageLevel.Beginner)
 
   return (
-    <Flex flexDirection="column" alignItems="center">
+    <Flex flexDirection="column" alignItems="center" px={4}>
       <Text mt={10} fontWeight="bold" fontSize="2xl">
         Select Language:
       </Text>
 
-      <Flex mt={4} w="full" maxW={600} flexWrap="wrap">
+      <Flex
+        mt={4}
+        w="full"
+        maxW={600}
+        flexWrap="wrap"
+        // flexDirection={{ base: 'column', md: 'row' }}
+        // alignItems={{ base: 'center', md: 'flex-start' }}
+      >
         {AllLanguages.map((t) => (
-          <Flex key={t.key} w="33%" p={2}>
+          <Flex key={t.key} w={{ base: '50%', md: '33%' }} p={2}>
             <Flex
               px={4}
               py={1}
@@ -51,7 +58,7 @@ export const SessionForm = ({ onSubmit }: SessionFormProps) => {
           LanguageLevel.Intermediate,
           LanguageLevel.Advanced,
         ].map((t) => (
-          <Flex key={t} w="33%" p={2}>
+          <Flex key={t} w={{ base: '100%', md: '33%' }} p={2}>
             <Flex
               flex={1}
               px={4}
