@@ -146,7 +146,7 @@ export default function Home() {
         await chat.logout()
       }
     } catch (ex) {
-      //router.replace('/')
+      router.replace('/')
       throw ex
     }
   }
